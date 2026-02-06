@@ -1,32 +1,44 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "Build an all-in-one AI business assistant that can manage/automate key business operations (ads, sales, portfolio tracking) and produce reports (annual revenue, profit/loss), proactively detect problems, fix what it can, and guide/email the owner so they can focus on growth.",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Deployment link returned Error 400: Canister ID Not Resolved (gateway couldn't determine destination canister).",
+    "Redeploy encountered domain validation error: domain must be 5–50 characters and contain only letters, numbers, and hyphens.",
+    "Assistant experienced intermittent failure when attempting to resend deployment link (\"hit a snag\" / \"stumbled while processing that\")."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-extend-the-admin-only-subscription-analytics-to-include-a-detailed-per-workspace-breakdown-business-name-owner-principal-subscription-plan-start-date-end-date-canceled-at-and-derived-status-such-as-no-subscription-active-trial-expired-trial-paid-canceled",
-      "title": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-additional-aggregated-metrics-to-subscription-analytics-beyond-the-current-counts-including-at-minimum-paid-subscriptions-split-monthly-vs-yearly-as-percentages-of-total-workspaces-and-a-count-of-free-trials-expiring-soon-e-g-within-the-next-48-hours-computed-using-trial-end-dates",
-      "title": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-enhance-the-subscription-analytics-page-ux-with-basic-data-exploration-controls-client-side-search-by-business-name-and-quick-filters-by-subscription-status-plan-all-no-subscription-free-trial-active-free-trial-expired-monthly-yearly-canceled",
-      "title": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+      "id": "feature-implement-a-new-frontend-reports-page-that-shows-annual-revenue-and-profit-loss-summaries-plus-a-simple-ui-to-input-and-manage-the-underlying-data-needed-for-those-calculations-so-the-user-can-actually-generate-meaningful-reports",
+      "title": "Implement a new frontend “Reports” page that shows annual revenue and profit/loss summaries, plus a simple UI to input and manage the underlying data needed for those calculations (so the user can actually generate meaningful reports).",
       "reqIds": [
         "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-ai-business-assistant-insights-panel-or-page-that-proactively-detects-common-problems-using-rule-based-analysis-of-the-workspace-e-g-no-sales-tracked-no-portfolios-no-campaigns-trial-expired-expiring-and-produces-step-by-step-guidance-and-recommended-actions",
+      "title": "Add an “AI Business Assistant” insights panel (or page) that proactively detects common problems using rule-based analysis of the workspace (e.g., no sales tracked, no portfolios, no campaigns, trial expired/expiring) and produces step-by-step guidance and recommended actions.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-in-app-message-templates-the-owner-can-copy-e-g-email-text-for-common-situations-follow-ups-invoice-reminders-customer-outreach-without-integrating-with-external-email-providers",
+      "title": "Provide in-app “message templates” the owner can copy (e.g., email text) for common situations (follow-ups, invoice reminders, customer outreach), without integrating with external email providers.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-cohesive-distinct-visual-theme-for-the-assistant-and-reporting-experiences-colors-typography-spacing-and-component-styling-and-apply-it-consistently-across-dashboard-reports-and-the-assistant-ui-without-changing-the-underlying-tech-stack",
+      "title": "Create a cohesive, distinct visual theme for the assistant and reporting experiences (colors, typography, spacing, and component styling) and apply it consistently across Dashboard, Reports, and the Assistant UI, without changing the underlying tech stack.",
+      "reqIds": [
+        "REQ-6"
       ],
       "version": 1
     }
@@ -34,12 +46,41 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Expand subscription analytics",
+      "summary": "Core AI business assistant to manage ads, sales, and business portfolio in one place",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Automated reporting dashboard: ad performance, sales performance, annual revenue, profit/loss (lost/gained)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Autonomous actions + guidance: detect issues, attempt fixes, and email/walk the owner through required steps",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add backend support for managing sales data (create/update/delete sales items) for the authenticated caller’s BusinessWorkspace, with authorization checks consistent with existing workspace update methods.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add backend support for business reporting metrics derived from workspace data, including annual revenue, gains/losses, and profit/loss summaries, returned via a dedicated query endpoint (computed, not manually edited in the report view).",
+      "reqIds": [
+        "REQ-2"
+      ],
       "status": "pending"
     }
   ],
-  "projectName": "Expand admin subscription analytics with detailed workspace breakdown and richer metrics",
+  "gameProjectType": "none",
+  "projectName": "Add AI-style business assistant features: reporting, insights, and guided actions across ads, sales, and portfolio",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

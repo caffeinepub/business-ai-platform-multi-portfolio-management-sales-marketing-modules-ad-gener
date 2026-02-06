@@ -11,6 +11,8 @@ import CampaignDetailPage from './pages/CampaignDetailPage';
 import AdGeneratorPage from './pages/AdGeneratorPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import SubscriptionAnalyticsPage from './pages/SubscriptionAnalyticsPage';
+import ReportsPage from './pages/ReportsPage';
+import AssistantPage from './pages/AssistantPage';
 import LoginPage from './pages/LoginPage';
 import ProfileSetupModal from './components/auth/ProfileSetupModal';
 
@@ -101,6 +103,18 @@ const subscriptionAnalyticsRoute = createRoute({
   component: SubscriptionAnalyticsPage,
 });
 
+const reportsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reports',
+  component: ReportsPage,
+});
+
+const assistantRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/assistant',
+  component: AssistantPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   portfoliosRoute,
@@ -111,6 +125,8 @@ const routeTree = rootRoute.addChildren([
   adGeneratorRoute,
   subscriptionRoute,
   subscriptionAnalyticsRoute,
+  reportsRoute,
+  assistantRoute,
 ]);
 
 const router = createRouter({ routeTree });

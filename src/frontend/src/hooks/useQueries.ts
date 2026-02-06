@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { BusinessWorkspace, PortfolioData, SubscriptionPlan, SubscriptionAnalytics } from '../backend';
+import type { BusinessWorkspace, PortfolioData, SubscriptionPlan, SubscriptionAnalytics, SalesItem, BusinessReport } from '../backend';
 
 export function useGetBusinessWorkspace() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -173,4 +173,72 @@ export function useGetSubscriptionAnalytics() {
     isLoading: actorFetching || query.isLoading,
     isFetched: !!actor && query.isFetched,
   };
+}
+
+export function useGetBusinessReport() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  const query = useQuery<BusinessReport | null>({
+    queryKey: ['businessReport'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getBusinessReport();
+    },
+    enabled: !!actor && !actorFetching,
+    retry: false,
+  });
+
+  return {
+    ...query,
+    isLoading: actorFetching || query.isLoading,
+    isFetched: !!actor && query.isFetched,
+  };
+}
+
+export function useAddSalesItem() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (item: Omit<SalesItem, 'id'>) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.addSalesItem({ ...item, id: 0n } as SalesItem);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['businessWorkspace'] });
+      queryClient.invalidateQueries({ queryKey: ['businessReport'] });
+    },
+  });
+}
+
+export function useUpdateSalesItem() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (item: SalesItem) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateSalesItem(item);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['businessWorkspace'] });
+      queryClient.invalidateQueries({ queryKey: ['businessReport'] });
+    },
+  });
+}
+
+export function useDeleteSalesItem() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (itemId: bigint) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.deleteSalesItem(itemId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['businessWorkspace'] });
+      queryClient.invalidateQueries({ queryKey: ['businessReport'] });
+    },
+  });
 }

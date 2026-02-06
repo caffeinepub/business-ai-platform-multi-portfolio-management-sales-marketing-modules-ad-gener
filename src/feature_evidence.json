@@ -2,53 +2,15 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-extend-the-admin-only-subscription-analytics-to-include-a-detailed-per-workspace-breakdown-business-name-owner-principal-subscription-plan-start-date-end-date-canceled-at-and-derived-status-such-as-no-subscription-active-trial-expired-trial-paid-canceled",
-      "featureTitle": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
+      "featureId": "feature-implement-a-new-frontend-reports-page-that-shows-annual-revenue-and-profit-loss-summaries-plus-a-simple-ui-to-input-and-manage-the-underlying-data-needed-for-those-calculations-so-the-user-can-actually-generate-meaningful-reports",
+      "featureTitle": "Implement a new frontend “Reports” page that shows annual revenue and profit/loss summaries, plus a simple UI to input and manage the underlying data needed for those calculations (so the user can actually generate meaningful reports).",
       "files": [
-        "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
-        "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/SidebarNav.tsx",
+        "frontend/src/components/sales/SalesItemDialog.tsx",
+        "frontend/src/components/sales/SalesItemsTable.tsx",
         "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-additional-aggregated-metrics-to-subscription-analytics-beyond-the-current-counts-including-at-minimum-paid-subscriptions-split-monthly-vs-yearly-as-percentages-of-total-workspaces-and-a-count-of-free-trials-expiring-soon-e-g-within-the-next-48-hours-computed-using-trial-end-dates",
-      "featureTitle": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-enhance-the-subscription-analytics-page-ux-with-basic-data-exploration-controls-client-side-search-by-business-name-and-quick-filters-by-subscription-status-plan-all-no-subscription-free-trial-active-free-trial-expired-monthly-yearly-canceled",
-      "featureTitle": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
-      "files": [
-        "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
-        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        "frontend/src/pages/ReportsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -60,6 +22,72 @@
       ],
       "testIds": [
         "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-ai-business-assistant-insights-panel-or-page-that-proactively-detects-common-problems-using-rule-based-analysis-of-the-workspace-e-g-no-sales-tracked-no-portfolios-no-campaigns-trial-expired-expiring-and-produces-step-by-step-guidance-and-recommended-actions",
+      "featureTitle": "Add an “AI Business Assistant” insights panel (or page) that proactively detects common problems using rule-based analysis of the workspace (e.g., no sales tracked, no portfolios, no campaigns, trial expired/expiring) and produces step-by-step guidance and recommended actions.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/SidebarNav.tsx",
+        "frontend/src/lib/assistantInsights.ts",
+        "frontend/src/pages/AssistantPage.tsx",
+        "frontend/src/pages/DashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-provide-in-app-message-templates-the-owner-can-copy-e-g-email-text-for-common-situations-follow-ups-invoice-reminders-customer-outreach-without-integrating-with-external-email-providers",
+      "featureTitle": "Provide in-app “message templates” the owner can copy (e.g., email text) for common situations (follow-ups, invoice reminders, customer outreach), without integrating with external email providers.",
+      "files": [
+        "frontend/src/components/assistant/MessageTemplates.tsx",
+        "frontend/src/lib/messageTemplates.ts",
+        "frontend/src/pages/AssistantPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-cohesive-distinct-visual-theme-for-the-assistant-and-reporting-experiences-colors-typography-spacing-and-component-styling-and-apply-it-consistently-across-dashboard-reports-and-the-assistant-ui-without-changing-the-underlying-tech-stack",
+      "featureTitle": "Create a cohesive, distinct visual theme for the assistant and reporting experiences (colors, typography, spacing, and component styling) and apply it consistently across Dashboard, Reports, and the Assistant UI, without changing the underlying tech stack.",
+      "files": [
+        "frontend/src/components/layout/PageSection.tsx",
+        "frontend/src/pages/AssistantPage.tsx",
+        "frontend/src/pages/DashboardPage.tsx",
+        "frontend/src/pages/ReportsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
       ],
       "confidence": "high"
     }

@@ -18,6 +18,11 @@ export interface Advertisement {
   'productOrService' : string,
   'channel' : string,
 }
+export interface BusinessReport {
+  'gainsLosses' : number,
+  'profitLoss' : number,
+  'annualRevenue' : number,
+}
 export interface BusinessWorkspace {
   'portfolioData' : [] | [PortfolioData],
   'marketingData' : [] | [MarketingData],
@@ -46,6 +51,7 @@ export interface PortfolioType {
 }
 export interface SalesData { 'items' : Array<SalesItem> }
 export interface SalesItem {
+  'id' : bigint,
   'status' : string,
   'name' : string,
   'amount' : number,
@@ -94,8 +100,10 @@ export type UserRole = { 'admin' : null } |
   { 'guest' : null };
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addSalesItem' : ActorMethod<[SalesItem], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'assignSubscriptionPlan' : ActorMethod<[SubscriptionPlan], undefined>,
+  'deleteSalesItem' : ActorMethod<[bigint], undefined>,
   'generateAiAdWorkspaces' : ActorMethod<
     [BusinessWorkspace, string, string, string, string, string],
     BusinessWorkspace
@@ -104,8 +112,10 @@ export interface _SERVICE {
     [],
     Array<BusinessWorkspace>
   >,
+  'getBusinessReport' : ActorMethod<[], [] | [BusinessReport]>,
   'getBusinessWorkspace' : ActorMethod<[], BusinessWorkspace>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getSalesData' : ActorMethod<[], [] | [SalesData]>,
   'getSubscriptionAnalytics' : ActorMethod<[], SubscriptionAnalytics>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'persistWorkspace' : ActorMethod<[BusinessWorkspace], undefined>,
@@ -113,6 +123,7 @@ export interface _SERVICE {
     [BusinessWorkspace, PortfolioData],
     BusinessWorkspace
   >,
+  'updateSalesItem' : ActorMethod<[SalesItem], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

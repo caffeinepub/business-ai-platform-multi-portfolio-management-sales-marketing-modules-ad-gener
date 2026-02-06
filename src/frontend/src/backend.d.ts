@@ -72,6 +72,11 @@ export interface SalesData {
 export interface MarketingData {
     campaigns: Array<Campaign>;
 }
+export interface BusinessReport {
+    gainsLosses: number;
+    profitLoss: number;
+    annualRevenue: number;
+}
 export interface Campaign {
     endDate: Time;
     name: string;
@@ -79,6 +84,7 @@ export interface Campaign {
     startDate: Time;
 }
 export interface SalesItem {
+    id: bigint;
     status: string;
     name: string;
     amount: number;
@@ -102,14 +108,19 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addSalesItem(item: SalesItem): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignSubscriptionPlan(plan: SubscriptionPlan): Promise<void>;
+    deleteSalesItem(itemId: bigint): Promise<void>;
     generateAiAdWorkspaces(anonymizedState: BusinessWorkspace, adCopy: string, productOrService: string, audience: string, tone: string, channel: string): Promise<BusinessWorkspace>;
     getAllWorkspacesSortedByBusinessName(): Promise<Array<BusinessWorkspace>>;
+    getBusinessReport(): Promise<BusinessReport | null>;
     getBusinessWorkspace(): Promise<BusinessWorkspace>;
     getCallerUserRole(): Promise<UserRole>;
+    getSalesData(): Promise<SalesData | null>;
     getSubscriptionAnalytics(): Promise<SubscriptionAnalytics>;
     isCallerAdmin(): Promise<boolean>;
     persistWorkspace(workspace: BusinessWorkspace): Promise<void>;
     updatePortfolioDataWorkspaces(anonymizedState: BusinessWorkspace, newPortfolioData: PortfolioData): Promise<BusinessWorkspace>;
+    updateSalesItem(updatedItem: SalesItem): Promise<void>;
 }

@@ -3,7 +3,7 @@ import { useGetBusinessWorkspace } from '../hooks/useQueries';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { LoadingState, ErrorState } from '../components/system/QueryState';
-import { Briefcase, TrendingUp, Megaphone, Sparkles, ArrowRight } from 'lucide-react';
+import { Briefcase, TrendingUp, Megaphone, Sparkles, ArrowRight, Bot } from 'lucide-react';
 import { getSubscriptionStatus } from '../lib/subscription';
 
 export default function DashboardPage() {
@@ -40,13 +40,16 @@ export default function DashboardPage() {
             </p>
             <div className="flex gap-3">
               <Button asChild size="lg">
+                <Link to="/assistant">
+                  <Bot className="mr-2 h-5 w-5" />
+                  AI Assistant
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg">
                 <Link to="/ad-generator">
                   <Sparkles className="mr-2 h-5 w-5" />
                   Generate Ads
                 </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link to="/portfolios">View Portfolios</Link>
               </Button>
             </div>
           </div>
@@ -141,15 +144,15 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <Briefcase className="h-8 w-8 mb-2 text-primary" />
-            <CardTitle>Manage Portfolios</CardTitle>
+            <Bot className="h-8 w-8 mb-2 text-primary" />
+            <CardTitle>AI Assistant</CardTitle>
             <CardDescription>
-              Create and manage multiple portfolio types including impact portfolios
+              Get personalized insights and guidance to grow your business
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/portfolios">Go to Portfolios</Link>
+              <Link to="/assistant">Open Assistant</Link>
             </Button>
           </CardContent>
         </Card>

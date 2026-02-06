@@ -1,76 +1,131 @@
 {
   "kind": "build_request",
-  "title": "Expand admin subscription analytics with detailed workspace breakdown and richer metrics",
+  "title": "Add AI-style business assistant features: reporting, insights, and guided actions across ads, sales, and portfolio",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
-      "target": "both",
+      "text": "Add backend support for managing sales data (create/update/delete sales items) for the authenticated caller’s BusinessWorkspace, with authorization checks consistent with existing workspace update methods.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "Your update is live. Does everything look right so far, and would you like me to expand the subscription analytics next?",
-          "Yes"
+          "manage everything is going to manage the reports to sales the portfolio",
+          "Advertisements sales annual reports"
         ]
       },
       "acceptanceCriteria": [
-        "Backend exposes an admin-only query that returns a list of workspace subscription summaries with: businessName, owner, plan (or none), startDate, endDate, canceledAt, and a derived status string/variant.",
-        "Unauthorized callers (non-admin) receive an error consistent with existing admin-only endpoints (e.g., “Unauthorized: Only admins…”).",
-        "Frontend Subscription Analytics page renders a table (or equivalent) showing each workspace row with the fields above and a clearly visible status label.",
-        "The existing high-level cards remain present and still load successfully."
+        "Backend exposes Candid methods to add, update, and remove SalesItem entries for the caller workspace.",
+        "Methods reject unauthorized callers (must have #user permission) and reject attempts to modify other users’ workspaces.",
+        "Sales mutations invalidate/refresh the frontend workspace query by re-fetching updated workspace data (end-to-end verified in UI)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
-      "target": "both",
+      "text": "Add backend support for business reporting metrics derived from workspace data, including annual revenue, gains/losses, and profit/loss summaries, returned via a dedicated query endpoint (computed, not manually edited in the report view).",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "would you like me to expand the subscription analytics next?",
-          "Yes"
+          "annual reports of what he or she lost or game",
+          "annual revenue reports"
         ]
       },
       "acceptanceCriteria": [
-        "Backend returns the new aggregate fields needed to support: (a) monthly% and yearly% of total, and (b) trialsExpiringSoonCount (<= 48 hours remaining).",
-        "Frontend displays the new aggregate metrics in the Subscription Analytics dashboard in a way that is readable and consistent with existing card styling.",
-        "All user-facing text is in English."
+        "Backend provides a query method that returns a report summary for the caller workspace, including at minimum: total revenue, total losses/expenses, and net profit/loss.",
+        "Report calculation is deterministic and based on stored workspace data (e.g., sales items and/or financial entries stored in workspace).",
+        "If the workspace has no data, the report endpoint returns zeros and a clear empty-data indicator (no traps)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+      "text": "Implement a new frontend “Reports” page that shows annual revenue and profit/loss summaries, plus a simple UI to input and manage the underlying data needed for those calculations (so the user can actually generate meaningful reports).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "expand the subscription analytics next?",
-          "Yes"
+          "manage the reports",
+          "annual reports of what he or she lost or game"
         ]
       },
       "acceptanceCriteria": [
-        "A search input filters the detailed workspace list by business name (case-insensitive).",
-        "Filter controls allow toggling the detailed list by the specified statuses/plans without requiring a backend change per filter action.",
-        "When filters/search produce no results, an explicit empty state is shown (not a blank area)."
+        "A new route is available from the authenticated app navigation to access the Reports page.",
+        "Reports page displays: total revenue, total losses/expenses, and net profit/loss for a selected year (or clearly labeled all-time if year is not applicable).",
+        "Reports page includes forms to add/edit/delete the relevant entries used in the report computations, with validation and error handling.",
+        "All user-facing copy is in English."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add an “AI Business Assistant” insights panel (or page) that proactively detects common problems using rule-based analysis of the workspace (e.g., no sales tracked, no portfolios, no campaigns, trial expired/expiring) and produces step-by-step guidance and recommended actions.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "it would adapt to see the problem fix it or email you what you need to say walk you through it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The assistant shows a list of detected issues with severity (e.g., info/warning/critical) and an explanation for each issue.",
+        "For each issue, the assistant provides an actionable checklist (step-by-step) that routes the user to the relevant page (Sales, Portfolios, Marketing, Subscription, Reports).",
+        "When there are no issues, the assistant shows an “All good” state and suggests one next step (e.g., generate ads, add sales items, review reports)."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Provide in-app “message templates” the owner can copy (e.g., email text) for common situations (follow-ups, invoice reminders, customer outreach), without integrating with external email providers.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "email you what you need to say"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Assistant UI includes copy-to-clipboard templates for at least: a sales follow-up, an invoice/payment reminder, and a customer win-back message.",
+        "Templates can be personalized using workspace businessName and any selected sales item/campaign context when available.",
+        "No external email sending is implemented; templates remain purely in-app copy text."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Create a cohesive, distinct visual theme for the assistant and reporting experiences (colors, typography, spacing, and component styling) and apply it consistently across Dashboard, Reports, and the Assistant UI, without changing the underlying tech stack.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Yes build"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard, Reports, and Assistant experiences share a consistent look-and-feel (cards, headings, spacing, and call-to-action styling).",
+        "Theme avoids default-looking UI by establishing a clear brand style (e.g., warm/neutral palette) and remains readable in light/dark modes if supported by current tokens.",
+        "No edits are made to files listed as immutable in SYSTEM_CONTEXT."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit files under frontend/src/components/ui, frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (compose existing components instead).",
-    "Keep admin authorization behavior consistent with existing checks (trap with an Unauthorized message for non-admins)."
+    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
+    "Do not edit files under frontend/src/components/ui (Shadcn components must be composed, not modified).",
+    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
+    "No third-party email integrations; any “email” capability must be implemented as copyable in-app text/templates only."
   ],
   "nonGoals": [
-    "Do not implement real-time updates/streaming analytics.",
-    "Do not add external databases or third-party analytics services.",
-    "Do not add third-party authentication; Internet Identity remains the only auth mechanism."
+    "Implementing real LLM-based AI features or external AI integrations (the assistant should be rule-based and data-driven within the app).",
+    "Real email sending, SMS, push notifications, or any external messaging delivery.",
+    "Integrations with external ad platforms (Google/Facebook), payment providers beyond existing subscription UI patterns, or external databases."
   ],
   "imageRequirements": {
     "required": [],

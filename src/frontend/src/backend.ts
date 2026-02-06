@@ -154,6 +154,11 @@ export interface SalesData {
 export interface MarketingData {
     campaigns: Array<Campaign>;
 }
+export interface BusinessReport {
+    gainsLosses: number;
+    profitLoss: number;
+    annualRevenue: number;
+}
 export interface Campaign {
     endDate: Time;
     name: string;
@@ -161,6 +166,7 @@ export interface Campaign {
     startDate: Time;
 }
 export interface SalesItem {
+    id: bigint;
     status: string;
     name: string;
     amount: number;
@@ -185,18 +191,23 @@ export enum UserRole {
 }
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    addSalesItem(item: SalesItem): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignSubscriptionPlan(plan: SubscriptionPlan): Promise<void>;
+    deleteSalesItem(itemId: bigint): Promise<void>;
     generateAiAdWorkspaces(anonymizedState: BusinessWorkspace, adCopy: string, productOrService: string, audience: string, tone: string, channel: string): Promise<BusinessWorkspace>;
     getAllWorkspacesSortedByBusinessName(): Promise<Array<BusinessWorkspace>>;
+    getBusinessReport(): Promise<BusinessReport | null>;
     getBusinessWorkspace(): Promise<BusinessWorkspace>;
     getCallerUserRole(): Promise<UserRole>;
+    getSalesData(): Promise<SalesData | null>;
     getSubscriptionAnalytics(): Promise<SubscriptionAnalytics>;
     isCallerAdmin(): Promise<boolean>;
     persistWorkspace(workspace: BusinessWorkspace): Promise<void>;
     updatePortfolioDataWorkspaces(anonymizedState: BusinessWorkspace, newPortfolioData: PortfolioData): Promise<BusinessWorkspace>;
+    updateSalesItem(updatedItem: SalesItem): Promise<void>;
 }
-import type { BusinessWorkspace as _BusinessWorkspace, ImpactPortfolioData as _ImpactPortfolioData, MarketingData as _MarketingData, PortfolioData as _PortfolioData, PortfolioType as _PortfolioType, SalesData as _SalesData, Subscription as _Subscription, SubscriptionAnalytics as _SubscriptionAnalytics, SubscriptionPlan as _SubscriptionPlan, SubscriptionStatus as _SubscriptionStatus, SubscriptionWorkspaceDetails as _SubscriptionWorkspaceDetails, Time as _Time, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { BusinessReport as _BusinessReport, BusinessWorkspace as _BusinessWorkspace, ImpactPortfolioData as _ImpactPortfolioData, MarketingData as _MarketingData, PortfolioData as _PortfolioData, PortfolioType as _PortfolioType, SalesData as _SalesData, Subscription as _Subscription, SubscriptionAnalytics as _SubscriptionAnalytics, SubscriptionPlan as _SubscriptionPlan, SubscriptionStatus as _SubscriptionStatus, SubscriptionWorkspaceDetails as _SubscriptionWorkspaceDetails, Time as _Time, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -210,6 +221,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
+    async addSalesItem(arg0: SalesItem): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addSalesItem(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addSalesItem(arg0);
             return result;
         }
     }
@@ -241,6 +266,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async deleteSalesItem(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteSalesItem(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteSalesItem(arg0);
+            return result;
+        }
+    }
     async generateAiAdWorkspaces(arg0: BusinessWorkspace, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string): Promise<BusinessWorkspace> {
         if (this.processError) {
             try {
@@ -269,6 +308,20 @@ export class Backend implements backendInterface {
             return from_candid_vec_n31(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getBusinessReport(): Promise<BusinessReport | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getBusinessReport();
+                return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getBusinessReport();
+            return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getBusinessWorkspace(): Promise<BusinessWorkspace> {
         if (this.processError) {
             try {
@@ -287,28 +340,42 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n32(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n33(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n32(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n33(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getSalesData(): Promise<SalesData | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getSalesData();
+                return from_candid_opt_n30(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getSalesData();
+            return from_candid_opt_n30(this._uploadFile, this._downloadFile, result);
         }
     }
     async getSubscriptionAnalytics(): Promise<SubscriptionAnalytics> {
         if (this.processError) {
             try {
                 const result = await this.actor.getSubscriptionAnalytics();
-                return from_candid_SubscriptionAnalytics_n34(this._uploadFile, this._downloadFile, result);
+                return from_candid_SubscriptionAnalytics_n35(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getSubscriptionAnalytics();
-            return from_candid_SubscriptionAnalytics_n34(this._uploadFile, this._downloadFile, result);
+            return from_candid_SubscriptionAnalytics_n35(this._uploadFile, this._downloadFile, result);
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -353,6 +420,20 @@ export class Backend implements backendInterface {
             return from_candid_BusinessWorkspace_n14(this._uploadFile, this._downloadFile, result);
         }
     }
+    async updateSalesItem(arg0: SalesItem): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateSalesItem(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateSalesItem(arg0);
+            return result;
+        }
+    }
 }
 function from_candid_BusinessWorkspace_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BusinessWorkspace): BusinessWorkspace {
     return from_candid_record_n15(_uploadFile, _downloadFile, value);
@@ -363,23 +444,23 @@ function from_candid_PortfolioData_n17(_uploadFile: (file: ExternalBlob) => Prom
 function from_candid_PortfolioType_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PortfolioType): PortfolioType {
     return from_candid_record_n21(_uploadFile, _downloadFile, value);
 }
-function from_candid_SubscriptionAnalytics_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionAnalytics): SubscriptionAnalytics {
-    return from_candid_record_n35(_uploadFile, _downloadFile, value);
+function from_candid_SubscriptionAnalytics_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionAnalytics): SubscriptionAnalytics {
+    return from_candid_record_n36(_uploadFile, _downloadFile, value);
 }
 function from_candid_SubscriptionPlan_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionPlan): SubscriptionPlan {
     return from_candid_variant_n29(_uploadFile, _downloadFile, value);
 }
-function from_candid_SubscriptionStatus_n39(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionStatus): SubscriptionStatus {
-    return from_candid_variant_n40(_uploadFile, _downloadFile, value);
+function from_candid_SubscriptionStatus_n40(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionStatus): SubscriptionStatus {
+    return from_candid_variant_n41(_uploadFile, _downloadFile, value);
 }
-function from_candid_SubscriptionWorkspaceDetails_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionWorkspaceDetails): SubscriptionWorkspaceDetails {
-    return from_candid_record_n38(_uploadFile, _downloadFile, value);
+function from_candid_SubscriptionWorkspaceDetails_n38(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SubscriptionWorkspaceDetails): SubscriptionWorkspaceDetails {
+    return from_candid_record_n39(_uploadFile, _downloadFile, value);
 }
 function from_candid_Subscription_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Subscription): Subscription {
     return from_candid_record_n26(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserRole_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n33(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n34(_uploadFile, _downloadFile, value);
 }
 function from_candid_opt_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_PortfolioData]): PortfolioData | null {
     return value.length === 0 ? null : from_candid_PortfolioData_n17(_uploadFile, _downloadFile, value[0]);
@@ -397,6 +478,9 @@ function from_candid_opt_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_SalesData]): SalesData | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_BusinessReport]): BusinessReport | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_record_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -465,7 +549,7 @@ function from_candid_record_n26(_uploadFile: (file: ExternalBlob) => Promise<Uin
         startDate: value.startDate
     };
 }
-function from_candid_record_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     emptySubscriptionsCount: bigint;
     monthlyCount: bigint;
     totalWorkspaces: bigint;
@@ -497,17 +581,17 @@ function from_candid_record_n35(_uploadFile: (file: ExternalBlob) => Promise<Uin
         monthlyCount: value.monthlyCount,
         totalWorkspaces: value.totalWorkspaces,
         monthlyPercent: value.monthlyPercent,
-        workspacesExpiringFreeTrials: from_candid_vec_n36(_uploadFile, _downloadFile, value.workspacesExpiringFreeTrials),
+        workspacesExpiringFreeTrials: from_candid_vec_n37(_uploadFile, _downloadFile, value.workspacesExpiringFreeTrials),
         canceledCount: value.canceledCount,
         yearlyPercent: value.yearlyPercent,
         freeTrialCount: value.freeTrialCount,
-        subscriptionDetails: from_candid_vec_n36(_uploadFile, _downloadFile, value.subscriptionDetails),
+        subscriptionDetails: from_candid_vec_n37(_uploadFile, _downloadFile, value.subscriptionDetails),
         expiredFreeTrialCount: value.expiredFreeTrialCount,
         expiringFreeTrialCount: value.expiringFreeTrialCount,
         yearlyCount: value.yearlyCount
     };
 }
-function from_candid_record_n38(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n39(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     status: _SubscriptionStatus;
     endDate: [] | [_Time];
     owner: Principal;
@@ -525,7 +609,7 @@ function from_candid_record_n38(_uploadFile: (file: ExternalBlob) => Promise<Uin
     startDate: Time;
 } {
     return {
-        status: from_candid_SubscriptionStatus_n39(_uploadFile, _downloadFile, value.status),
+        status: from_candid_SubscriptionStatus_n40(_uploadFile, _downloadFile, value.status),
         endDate: record_opt_to_undefined(from_candid_opt_n27(_uploadFile, _downloadFile, value.endDate)),
         owner: value.owner,
         plan: from_candid_SubscriptionPlan_n28(_uploadFile, _downloadFile, value.plan),
@@ -545,7 +629,7 @@ function from_candid_variant_n29(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): SubscriptionPlan {
     return "canceled" in value ? SubscriptionPlan.canceled : "monthly" in value ? SubscriptionPlan.monthly : "yearly" in value ? SubscriptionPlan.yearly : "freeTrial" in value ? SubscriptionPlan.freeTrial : value;
 }
-function from_candid_variant_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -554,7 +638,7 @@ function from_candid_variant_n33(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_variant_n40(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n41(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     canceled: null;
 } | {
     paid: null;
@@ -573,8 +657,8 @@ function from_candid_vec_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 function from_candid_vec_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_BusinessWorkspace>): Array<BusinessWorkspace> {
     return value.map((x)=>from_candid_BusinessWorkspace_n14(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_SubscriptionWorkspaceDetails>): Array<SubscriptionWorkspaceDetails> {
-    return value.map((x)=>from_candid_SubscriptionWorkspaceDetails_n37(_uploadFile, _downloadFile, x));
+function from_candid_vec_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_SubscriptionWorkspaceDetails>): Array<SubscriptionWorkspaceDetails> {
+    return value.map((x)=>from_candid_SubscriptionWorkspaceDetails_n38(_uploadFile, _downloadFile, x));
 }
 function to_candid_BusinessWorkspace_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BusinessWorkspace): _BusinessWorkspace {
     return to_candid_record_n6(_uploadFile, _downloadFile, value);

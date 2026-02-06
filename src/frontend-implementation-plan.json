@@ -1,79 +1,145 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin subscription analytics: workspace breakdown, richer metrics, and exploration controls (frontend-only)",
+  "title": "AI-style business assistant: Reports + insights + guided actions (frontend)",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Render a detailed per-workspace subscription breakdown table on the admin Subscription Analytics page while preserving existing high-level cards.",
-      "acceptanceCriteria": [
-        "Backend exposes an admin-only query that returns a list of workspace subscription summaries with: businessName, owner, plan (or none), startDate, endDate, canceledAt, and a derived status string/variant.",
-        "Unauthorized callers (non-admin) receive an error consistent with existing admin-only endpoints (e.g., “Unauthorized: Only admins…”).",
-        "Frontend Subscription Analytics page renders a table (or equivalent) showing each workspace row with the fields above and a clearly visible status label.",
-        "The existing high-level cards remain present and still load successfully."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update the Subscription Analytics query typing to use the full SubscriptionAnalytics shape from frontend/src/backend.d.ts (including subscriptionDetails and related fields), so the page can render per-workspace rows while still supporting existing summary cards."
-        },
-        {
-          "path": "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
-          "operation": "create",
-          "description": "Create a small presentational component to render a clearly visible, consistent status label (e.g., via a badge/pill) for each workspace row using SubscriptionStatus/SubscriptionPlan semantics. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
-          "operation": "create",
-          "description": "Create a table component that displays one row per workspace with: business name, owner principal, plan (or none), start date, end date, canceled at, and derived status. Keep it purely presentational (data passed in as props) and compatible with existing shadcn/ui table-related primitives if available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
-          "operation": "modify",
-          "description": "Extend the page to render the new detailed workspace breakdown section below the existing cards, using WorkspaceSubscriptionTable and SubscriptionStatusBadge; format Time values into readable English dates, show explicit 'None' for missing plan/dates, and keep the existing high-level cards unchanged."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Display additional aggregate subscription metrics (monthly/yearly paid percentages and trials expiring soon) on the Subscription Analytics dashboard with existing card styling.",
-      "acceptanceCriteria": [
-        "Backend returns the new aggregate fields needed to support: (a) monthly% and yearly% of total, and (b) trialsExpiringSoonCount (<= 48 hours remaining).",
-        "Frontend displays the new aggregate metrics in the Subscription Analytics dashboard in a way that is readable and consistent with existing card styling.",
-        "All user-facing text is in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Ensure the analytics query exposes aggregate percentage fields (monthlyPercent, yearlyPercent) and the expiring-soon free-trial count field provided by the backend type (e.g., expiringFreeTrialCount) for use in the dashboard UI."
-        },
-        {
-          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
-          "operation": "modify",
-          "description": "Add new aggregate metric displays consistent with existing card styling: show Monthly % of total workspaces, Yearly % of total workspaces, and Trials expiring soon (48 hours). Keep all user-facing text in English and ensure existing cards still render."
-        }
-      ]
-    },
-    {
       "id": "REQ-3",
-      "summary": "Add client-side search and quick filters to explore the detailed workspace subscription list, with an explicit empty state for no results.",
+      "summary": "Add a new authenticated Reports page that shows computed business report totals and provides CRUD UI to manage the sales entries that power reporting.",
       "acceptanceCriteria": [
-        "A search input filters the detailed workspace list by business name (case-insensitive).",
-        "Filter controls allow toggling the detailed list by the specified statuses/plans without requiring a backend change per filter action.",
-        "When filters/search produce no results, an explicit empty state is shown (not a blank area)."
+        "A new route is available from the authenticated app navigation to access the Reports page.",
+        "Reports page displays: total revenue, total losses/expenses, and net profit/loss for a selected year (or clearly labeled all-time if year is not applicable).",
+        "Reports page includes forms to add/edit/delete the relevant entries used in the report computations, with validation and error handling.",
+        "All user-facing copy is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+          "path": "frontend/src/pages/ReportsPage.tsx",
           "operation": "create",
-          "description": "Create a small UI control strip that provides: (1) a search input for business name and (2) quick filter controls for: All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled. Implement as controlled inputs via props/callbacks. Verify the component's usage instructions before implementing."
+          "description": "Create the Reports page UI: load the computed report summary (all-time if no year support is available), render revenue/loss/profit cards, and include a SalesItem management section (add/edit/delete) with validation and user-friendly error handling. Use shadcn-ui components (e.g., Card, Button, Dialog, Form inputs) by composing them (do not modify files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add client-side state for search and active filter; compute a filtered workspace list from analytics.subscriptionDetails using case-insensitive businessName matching and status/plan mapping; render WorkspaceSubscriptionFilters above the table; when no rows match, render an explicit EmptyState (from frontend/src/components/system/QueryState.tsx) instead of an empty table."
+          "description": "Add React Query hooks needed by Reports: a query hook for the computed business report, and mutation hooks for sales item create/update/delete that invalidate/refetch the workspace (and any report query) on success; ensure authorization failures/traps surface as readable UI errors (per the authorization component guidance). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/sales/SalesItemDialog.tsx",
+          "operation": "create",
+          "description": "Add a reusable SalesItem add/edit dialog component (used from Reports and optionally Sales): supports status/name/amount fields, client-side validation, and submits via the appropriate sales mutation hook; show mutation errors inline. Use shadcn-ui Dialog/Form primitives by composition only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/sales/SalesItemsTable.tsx",
+          "operation": "create",
+          "description": "Create a reusable sales items table component that lists items and exposes Edit/Delete actions wired to the dialog and delete mutation; include empty/filter-friendly states and consistent formatting. Use shadcn-ui Table/Badge/Button components by composition only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register the new /reports route in the TanStack Router tree and wire it to the ReportsPage so it is navigable within the authenticated app shell."
+        },
+        {
+          "path": "frontend/src/components/layout/SidebarNav.tsx",
+          "operation": "modify",
+          "description": "Add a 'Reports' navigation item in the authenticated sidebar pointing to /reports (with an appropriate icon) so users can access reporting from the main app navigation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add a rule-based AI Business Assistant UI that detects workspace issues and guides the user with step-by-step actions linking to relevant app pages.",
+      "acceptanceCriteria": [
+        "The assistant shows a list of detected issues with severity (e.g., info/warning/critical) and an explanation for each issue.",
+        "For each issue, the assistant provides an actionable checklist (step-by-step) that routes the user to the relevant page (Sales, Portfolios, Marketing, Subscription, Reports).",
+        "When there are no issues, the assistant shows an “All good” state and suggests one next step (e.g., generate ads, add sales items, review reports)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AssistantPage.tsx",
+          "operation": "create",
+          "description": "Create an AI Business Assistant page that loads the workspace and performs rule-based analysis (no sales tracked, no portfolios, no campaigns, trial expired/expiring) to produce a prioritized issues list with severity, explanations, and step-by-step checklists; each checklist item links to existing routes (Sales, Portfolios, Marketing, Subscription, Reports). Include an 'All good' state with a suggested next step when no issues are detected. Use shadcn-ui components (Card, Badge, Button, Accordion/Alert as needed) by composing them only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/assistantInsights.ts",
+          "operation": "create",
+          "description": "Implement pure rule-based helpers to derive assistant issues from BusinessWorkspace data (and subscription status derived on the client) including severity, explanation text, and a checklist of recommended actions with destination routes."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register a new /assistant route and wire it to AssistantPage within the authenticated router tree."
+        },
+        {
+          "path": "frontend/src/components/layout/SidebarNav.tsx",
+          "operation": "modify",
+          "description": "Add an 'Assistant' navigation item in the authenticated sidebar pointing to /assistant so users can quickly reach guidance and insights."
+        },
+        {
+          "path": "frontend/src/pages/DashboardPage.tsx",
+          "operation": "modify",
+          "description": "Wire an entry point from the Dashboard experience to the Assistant (e.g., a card/CTA in the existing dashboard layout) to make the assistant discoverable without adding a new top-level public page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Provide in-app, copy-to-clipboard message templates within the Assistant experience, with optional personalization from workspace and selected context.",
+      "acceptanceCriteria": [
+        "Assistant UI includes copy-to-clipboard templates for at least: a sales follow-up, an invoice/payment reminder, and a customer win-back message.",
+        "Templates can be personalized using workspace businessName and any selected sales item/campaign context when available.",
+        "No external email sending is implemented; templates remain purely in-app copy text."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/assistant/MessageTemplates.tsx",
+          "operation": "create",
+          "description": "Create a message templates component that renders at least three templates (sales follow-up, invoice/payment reminder, customer win-back) with copy-to-clipboard actions; support optional personalization tokens using workspace.businessName and optional selected SalesItem/Campaign context when available; keep all messaging purely in-app (no external integrations). Use shadcn-ui components (Card, Button, Select, Textarea) by composition only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/AssistantPage.tsx",
+          "operation": "modify",
+          "description": "Integrate the MessageTemplates component into the Assistant page and pass workspace + optional selected context (sales item and/or campaign) so templates can be personalized when data exists."
+        },
+        {
+          "path": "frontend/src/lib/messageTemplates.ts",
+          "operation": "create",
+          "description": "Add a small utility module defining the template strings and a safe interpolation function for workspace/context fields (English-only copy), used by the Assistant templates UI."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Create and apply a cohesive visual theme for Dashboard, Reports, and Assistant experiences using existing styling entry points and composed components.",
+      "acceptanceCriteria": [
+        "Dashboard, Reports, and Assistant experiences share a consistent look-and-feel (cards, headings, spacing, and call-to-action styling).",
+        "Theme avoids default-looking UI by establishing a clear brand style (e.g., warm/neutral palette) and remains readable in light/dark modes if supported by current tokens.",
+        "No edits are made to files listed as immutable in SYSTEM_CONTEXT."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Refine global theme tokens (colors/radius/foreground-muted balance) and add minimal base-level styling tweaks to establish a distinct assistant/reporting brand feel while preserving readability in light/dark modes; do not introduce new tech stack dependencies."
+        },
+        {
+          "path": "frontend/src/components/layout/PageSection.tsx",
+          "operation": "create",
+          "description": "Create a small, reusable layout component for consistent page headers/sections (title, subtitle, optional right-side actions) to unify Dashboard, Reports, and Assistant spacing/typography. Use shadcn-ui components by composition only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/DashboardPage.tsx",
+          "operation": "modify",
+          "description": "Adopt the shared page section/header patterns and align card/CTA styling with the assistant/reporting theme to ensure consistency across the core experiences."
+        },
+        {
+          "path": "frontend/src/pages/ReportsPage.tsx",
+          "operation": "modify",
+          "description": "Apply the shared page section/header patterns and consistent card/CTA styling so the Reports experience matches the Dashboard and Assistant theme."
+        },
+        {
+          "path": "frontend/src/pages/AssistantPage.tsx",
+          "operation": "modify",
+          "description": "Apply the shared page section/header patterns and consistent severity/CTA styling so the Assistant experience matches the Dashboard and Reports theme."
         }
       ]
     }

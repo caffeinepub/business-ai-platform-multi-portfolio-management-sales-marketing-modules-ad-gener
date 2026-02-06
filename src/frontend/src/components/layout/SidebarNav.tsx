@@ -1,10 +1,12 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import { LayoutDashboard, Briefcase, TrendingUp, Megaphone, Sparkles, CreditCard, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Briefcase, TrendingUp, Megaphone, Sparkles, CreditCard, BarChart3, FileText, Bot } from 'lucide-react';
 import LoginButton from '../auth/LoginButton';
 import { useGetCallerUserProfile } from '../../hooks/useQueries';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/assistant', label: 'AI Assistant', icon: Bot },
+  { path: '/reports', label: 'Reports', icon: FileText },
   { path: '/portfolios', label: 'Portfolios', icon: Briefcase },
   { path: '/sales', label: 'Sales', icon: TrendingUp },
   { path: '/marketing', label: 'Marketing', icon: Megaphone },
@@ -36,7 +38,7 @@ export default function SidebarNav() {
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
@@ -51,8 +53,8 @@ export default function SidebarNav() {
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               }`}
             >
-              <Icon className="h-5 w-5" />
-              {item.label}
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              <span className="truncate">{item.label}</span>
             </Link>
           );
         })}

@@ -5,11 +5,15 @@ import Map "mo:core/Map";
 import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import Text "mo:core/Text";
+import Float "mo:core/Float";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
+import Nat "mo:core/Nat";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   public type SubscriptionPlan = {
     #freeTrial;
@@ -67,6 +71,7 @@ actor {
   };
 
   public type SalesItem = {
+    id : Nat;
     name : Text;
     status : Text;
     amount : Float;
@@ -108,6 +113,12 @@ actor {
     impactDetails : Text;
   };
 
+  public type BusinessReport = {
+    annualRevenue : Float;
+    gainsLosses : Float;
+    profitLoss : Float;
+  };
+
   module BusinessWorkspace {
     public func compareByBusinessName(workspace1 : BusinessWorkspace, workspace2 : BusinessWorkspace) : Order.Order {
       Text.compare(workspace1.businessName, workspace2.businessName);
@@ -115,6 +126,7 @@ actor {
   };
 
   let workspaces = Map.empty<Principal, BusinessWorkspace>();
+  var nextSalesItemId = 0;
 
   let anonymousWorkspace = {
     owner = Principal.fromText("2vxsx-fae");
@@ -516,6 +528,156 @@ actor {
       endDate;
       canceledAt;
       status;
+    };
+  };
+
+  public query ({ caller }) func getSalesData() : async ?SalesData {
+    switch (workspaces.get(caller)) {
+      case (?workspace) { workspace.salesData };
+      case (null) { null };
+    };
+  };
+
+  public shared ({ caller }) func updateSalesItem(updatedItem : SalesItem) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update sales items");
+    };
+
+    switch (workspaces.get(caller)) {
+      case (?workspace) {
+        switch (workspace.salesData) {
+          case (?salesData) {
+            let updatedItems = salesData.items.map(
+              func(item) {
+                if (item.id == updatedItem.id) {
+                  updatedItem;
+                } else {
+                  item;
+                };
+              }
+            );
+
+            let updatedSalesData : SalesData = {
+              items = updatedItems;
+            };
+
+            let updatedWorkspace : BusinessWorkspace = {
+              owner = workspace.owner;
+              businessName = workspace.businessName;
+              salesData = ?updatedSalesData;
+              marketingData = workspace.marketingData;
+              portfolioData = workspace.portfolioData;
+              subscription = workspace.subscription;
+            };
+
+            workspaces.add(caller, updatedWorkspace);
+          };
+          case (null) {
+            Runtime.trap("No sales data found for principal");
+          };
+        };
+      };
+      case (null) {
+        Runtime.trap("No workspace found for principal");
+      };
+    };
+  };
+
+  public shared ({ caller }) func deleteSalesItem(itemId : Nat) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can delete sales items");
+    };
+
+    switch (workspaces.get(caller)) {
+      case (?workspace) {
+        switch (workspace.salesData) {
+          case (?salesData) {
+            let filteredSalesItems = salesData.items.filter(
+              func(item) {
+                item.id != itemId;
+              }
+            );
+            let updatedSalesData : SalesData = {
+              items = filteredSalesItems;
+            };
+
+            let updatedWorkspace : BusinessWorkspace = {
+              owner = workspace.owner;
+              businessName = workspace.businessName;
+              salesData = ?updatedSalesData;
+              marketingData = workspace.marketingData;
+              portfolioData = workspace.portfolioData;
+              subscription = workspace.subscription;
+            };
+
+            workspaces.add(caller, updatedWorkspace);
+          };
+          case (null) {
+            Runtime.trap("No sales data found for principal");
+          };
+        };
+      };
+      case (null) {
+        Runtime.trap("No workspace found for principal");
+      };
+    };
+  };
+
+  public query ({ caller }) func getBusinessReport() : async ?BusinessReport {
+    switch (workspaces.get(caller)) {
+      case (?workspace) {
+        switch (workspace.salesData) {
+          case (?salesData) {
+            let annualRevenue = salesData.items.foldLeft(
+              0.0,
+              func(acc, item) { acc + item.amount },
+            );
+
+            let report : BusinessReport = {
+              annualRevenue;
+              gainsLosses = 0.0;
+              profitLoss = 0.0;
+            };
+            ?report;
+          };
+          case (null) { null };
+        };
+      };
+      case (null) { null };
+    };
+  };
+
+  public shared ({ caller }) func addSalesItem(item : SalesItem) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can add sales items");
+    };
+
+    switch (workspaces.get(caller)) {
+      case (?workspace) {
+        let newItem = { item with id = nextSalesItemId };
+        nextSalesItemId += 1;
+
+        let updatedSalesData : SalesData = {
+          items = switch (workspace.salesData) {
+            case (?existingData) { existingData.items.concat([newItem]) };
+            case (null) { [newItem] };
+          };
+        };
+
+        let updatedWorkspace : BusinessWorkspace = {
+          owner = workspace.owner;
+          businessName = workspace.businessName;
+          salesData = ?updatedSalesData;
+          marketingData = workspace.marketingData;
+          portfolioData = workspace.portfolioData;
+          subscription = workspace.subscription;
+        };
+
+        workspaces.add(caller, updatedWorkspace);
+      };
+      case (null) {
+        Runtime.trap("No workspace found for principal");
+      };
     };
   };
 };

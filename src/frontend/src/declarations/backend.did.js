@@ -8,6 +8,12 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const SalesItem = IDL.Record({
+  'id' : IDL.Nat,
+  'status' : IDL.Text,
+  'name' : IDL.Text,
+  'amount' : IDL.Float64,
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
@@ -54,11 +60,6 @@ export const Subscription = IDL.Record({
   'canceledAt' : IDL.Opt(Time),
   'startDate' : Time,
 });
-export const SalesItem = IDL.Record({
-  'status' : IDL.Text,
-  'name' : IDL.Text,
-  'amount' : IDL.Float64,
-});
 export const SalesData = IDL.Record({ 'items' : IDL.Vec(SalesItem) });
 export const BusinessWorkspace = IDL.Record({
   'portfolioData' : IDL.Opt(PortfolioData),
@@ -67,6 +68,11 @@ export const BusinessWorkspace = IDL.Record({
   'owner' : IDL.Principal,
   'businessName' : IDL.Text,
   'salesData' : IDL.Opt(SalesData),
+});
+export const BusinessReport = IDL.Record({
+  'gainsLosses' : IDL.Float64,
+  'profitLoss' : IDL.Float64,
+  'annualRevenue' : IDL.Float64,
 });
 export const SubscriptionStatus = IDL.Variant({
   'canceled' : IDL.Null,
@@ -101,8 +107,10 @@ export const SubscriptionAnalytics = IDL.Record({
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addSalesItem' : IDL.Func([SalesItem], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'assignSubscriptionPlan' : IDL.Func([SubscriptionPlan], [], []),
+  'deleteSalesItem' : IDL.Func([IDL.Nat], [], []),
   'generateAiAdWorkspaces' : IDL.Func(
       [BusinessWorkspace, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [BusinessWorkspace],
@@ -113,8 +121,10 @@ export const idlService = IDL.Service({
       [IDL.Vec(BusinessWorkspace)],
       ['query'],
     ),
+  'getBusinessReport' : IDL.Func([], [IDL.Opt(BusinessReport)], ['query']),
   'getBusinessWorkspace' : IDL.Func([], [BusinessWorkspace], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getSalesData' : IDL.Func([], [IDL.Opt(SalesData)], ['query']),
   'getSubscriptionAnalytics' : IDL.Func([], [SubscriptionAnalytics], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'persistWorkspace' : IDL.Func([BusinessWorkspace], [], []),
@@ -123,11 +133,18 @@ export const idlService = IDL.Service({
       [BusinessWorkspace],
       [],
     ),
+  'updateSalesItem' : IDL.Func([SalesItem], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const SalesItem = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : IDL.Text,
+    'name' : IDL.Text,
+    'amount' : IDL.Float64,
+  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
@@ -174,11 +191,6 @@ export const idlFactory = ({ IDL }) => {
     'canceledAt' : IDL.Opt(Time),
     'startDate' : Time,
   });
-  const SalesItem = IDL.Record({
-    'status' : IDL.Text,
-    'name' : IDL.Text,
-    'amount' : IDL.Float64,
-  });
   const SalesData = IDL.Record({ 'items' : IDL.Vec(SalesItem) });
   const BusinessWorkspace = IDL.Record({
     'portfolioData' : IDL.Opt(PortfolioData),
@@ -187,6 +199,11 @@ export const idlFactory = ({ IDL }) => {
     'owner' : IDL.Principal,
     'businessName' : IDL.Text,
     'salesData' : IDL.Opt(SalesData),
+  });
+  const BusinessReport = IDL.Record({
+    'gainsLosses' : IDL.Float64,
+    'profitLoss' : IDL.Float64,
+    'annualRevenue' : IDL.Float64,
   });
   const SubscriptionStatus = IDL.Variant({
     'canceled' : IDL.Null,
@@ -221,8 +238,10 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addSalesItem' : IDL.Func([SalesItem], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'assignSubscriptionPlan' : IDL.Func([SubscriptionPlan], [], []),
+    'deleteSalesItem' : IDL.Func([IDL.Nat], [], []),
     'generateAiAdWorkspaces' : IDL.Func(
         [BusinessWorkspace, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
         [BusinessWorkspace],
@@ -233,8 +252,10 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(BusinessWorkspace)],
         ['query'],
       ),
+    'getBusinessReport' : IDL.Func([], [IDL.Opt(BusinessReport)], ['query']),
     'getBusinessWorkspace' : IDL.Func([], [BusinessWorkspace], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getSalesData' : IDL.Func([], [IDL.Opt(SalesData)], ['query']),
     'getSubscriptionAnalytics' : IDL.Func(
         [],
         [SubscriptionAnalytics],
@@ -247,6 +268,7 @@ export const idlFactory = ({ IDL }) => {
         [BusinessWorkspace],
         [],
       ),
+    'updateSalesItem' : IDL.Func([SalesItem], [], []),
   });
 };
 

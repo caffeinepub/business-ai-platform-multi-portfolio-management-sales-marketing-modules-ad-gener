@@ -1,0 +1,78 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-06T09:48:28.457Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 3,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+          "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+          "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+          "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+    "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+    "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

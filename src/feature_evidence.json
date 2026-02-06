@@ -1,0 +1,67 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-extend-the-admin-only-subscription-analytics-to-include-a-detailed-per-workspace-breakdown-business-name-owner-principal-subscription-plan-start-date-end-date-canceled-at-and-derived-status-such-as-no-subscription-active-trial-expired-trial-paid-canceled",
+      "featureTitle": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
+      "files": [
+        "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+        "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-additional-aggregated-metrics-to-subscription-analytics-beyond-the-current-counts-including-at-minimum-paid-subscriptions-split-monthly-vs-yearly-as-percentages-of-total-workspaces-and-a-count-of-free-trials-expiring-soon-e-g-within-the-next-48-hours-computed-using-trial-end-dates",
+      "featureTitle": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-the-subscription-analytics-page-ux-with-basic-data-exploration-controls-client-side-search-by-business-name-and-quick-filters-by-subscription-status-plan-all-no-subscription-free-trial-active-free-trial-expired-monthly-yearly-canceled",
+      "featureTitle": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+      "files": [
+        "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+        "frontend/src/pages/SubscriptionAnalyticsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

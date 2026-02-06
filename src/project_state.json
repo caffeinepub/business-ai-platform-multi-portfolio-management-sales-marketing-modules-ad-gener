@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-extend-the-admin-only-subscription-analytics-to-include-a-detailed-per-workspace-breakdown-business-name-owner-principal-subscription-plan-start-date-end-date-canceled-at-and-derived-status-such-as-no-subscription-active-trial-expired-trial-paid-canceled",
+      "title": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-additional-aggregated-metrics-to-subscription-analytics-beyond-the-current-counts-including-at-minimum-paid-subscriptions-split-monthly-vs-yearly-as-percentages-of-total-workspaces-and-a-count-of-free-trials-expiring-soon-e-g-within-the-next-48-hours-computed-using-trial-end-dates",
+      "title": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-subscription-analytics-page-ux-with-basic-data-exploration-controls-client-side-search-by-business-name-and-quick-filters-by-subscription-status-plan-all-no-subscription-free-trial-active-free-trial-expired-monthly-yearly-canceled",
+      "title": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Expand subscription analytics",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Expand admin subscription analytics with detailed workspace breakdown and richer metrics",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

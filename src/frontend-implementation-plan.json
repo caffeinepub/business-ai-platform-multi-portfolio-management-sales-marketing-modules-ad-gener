@@ -1,0 +1,81 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Admin subscription analytics: workspace breakdown, richer metrics, and exploration controls (frontend-only)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Render a detailed per-workspace subscription breakdown table on the admin Subscription Analytics page while preserving existing high-level cards.",
+      "acceptanceCriteria": [
+        "Backend exposes an admin-only query that returns a list of workspace subscription summaries with: businessName, owner, plan (or none), startDate, endDate, canceledAt, and a derived status string/variant.",
+        "Unauthorized callers (non-admin) receive an error consistent with existing admin-only endpoints (e.g., “Unauthorized: Only admins…”).",
+        "Frontend Subscription Analytics page renders a table (or equivalent) showing each workspace row with the fields above and a clearly visible status label.",
+        "The existing high-level cards remain present and still load successfully."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the Subscription Analytics query typing to use the full SubscriptionAnalytics shape from frontend/src/backend.d.ts (including subscriptionDetails and related fields), so the page can render per-workspace rows while still supporting existing summary cards."
+        },
+        {
+          "path": "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+          "operation": "create",
+          "description": "Create a small presentational component to render a clearly visible, consistent status label (e.g., via a badge/pill) for each workspace row using SubscriptionStatus/SubscriptionPlan semantics. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+          "operation": "create",
+          "description": "Create a table component that displays one row per workspace with: business name, owner principal, plan (or none), start date, end date, canceled at, and derived status. Keep it purely presentational (data passed in as props) and compatible with existing shadcn/ui table-related primitives if available. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+          "operation": "modify",
+          "description": "Extend the page to render the new detailed workspace breakdown section below the existing cards, using WorkspaceSubscriptionTable and SubscriptionStatusBadge; format Time values into readable English dates, show explicit 'None' for missing plan/dates, and keep the existing high-level cards unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Display additional aggregate subscription metrics (monthly/yearly paid percentages and trials expiring soon) on the Subscription Analytics dashboard with existing card styling.",
+      "acceptanceCriteria": [
+        "Backend returns the new aggregate fields needed to support: (a) monthly% and yearly% of total, and (b) trialsExpiringSoonCount (<= 48 hours remaining).",
+        "Frontend displays the new aggregate metrics in the Subscription Analytics dashboard in a way that is readable and consistent with existing card styling.",
+        "All user-facing text is in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the analytics query exposes aggregate percentage fields (monthlyPercent, yearlyPercent) and the expiring-soon free-trial count field provided by the backend type (e.g., expiringFreeTrialCount) for use in the dashboard UI."
+        },
+        {
+          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+          "operation": "modify",
+          "description": "Add new aggregate metric displays consistent with existing card styling: show Monthly % of total workspaces, Yearly % of total workspaces, and Trials expiring soon (48 hours). Keep all user-facing text in English and ensure existing cards still render."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Add client-side search and quick filters to explore the detailed workspace subscription list, with an explicit empty state for no results.",
+      "acceptanceCriteria": [
+        "A search input filters the detailed workspace list by business name (case-insensitive).",
+        "Filter controls allow toggling the detailed list by the specified statuses/plans without requiring a backend change per filter action.",
+        "When filters/search produce no results, an explicit empty state is shown (not a blank area)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+          "operation": "create",
+          "description": "Create a small UI control strip that provides: (1) a search input for business name and (2) quick filter controls for: All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled. Implement as controlled inputs via props/callbacks. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+          "operation": "modify",
+          "description": "Add client-side state for search and active filter; compute a filtered workspace list from analytics.subscriptionDetails using case-insensitive businessName matching and status/plan mapping; render WorkspaceSubscriptionFilters above the table; when no rows match, render an explicit EmptyState (from frontend/src/components/system/QueryState.tsx) instead of an empty table."
+        }
+      ]
+    }
+  ]
+}

@@ -1,2 +1,3 @@
-# business-ai-platform-multi-portfolio-management-sales-marketing-modules-ad-gener
-Exported from Caffeine project: Expand admin subscription analytics with detailed workspace breakdown and richer metrics
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

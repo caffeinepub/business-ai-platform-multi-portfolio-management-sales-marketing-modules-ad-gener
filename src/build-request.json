@@ -1,0 +1,79 @@
+{
+  "kind": "build_request",
+  "title": "Expand admin subscription analytics with detailed workspace breakdown and richer metrics",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Extend the admin-only subscription analytics to include a detailed per-workspace breakdown (business name, owner principal, subscription plan, start date, end date, canceled at, and derived status such as “No subscription”, “Active trial”, “Expired trial”, “Paid”, “Canceled”).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "Your update is live. Does everything look right so far, and would you like me to expand the subscription analytics next?",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes an admin-only query that returns a list of workspace subscription summaries with: businessName, owner, plan (or none), startDate, endDate, canceledAt, and a derived status string/variant.",
+        "Unauthorized callers (non-admin) receive an error consistent with existing admin-only endpoints (e.g., “Unauthorized: Only admins…”).",
+        "Frontend Subscription Analytics page renders a table (or equivalent) showing each workspace row with the fields above and a clearly visible status label.",
+        "The existing high-level cards remain present and still load successfully."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add additional aggregated metrics to subscription analytics beyond the current counts, including at minimum: paid subscriptions split (monthly vs yearly) as percentages of total workspaces, and a count of free trials expiring soon (e.g., within the next 48 hours) computed using trial end dates.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "would you like me to expand the subscription analytics next?",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend returns the new aggregate fields needed to support: (a) monthly% and yearly% of total, and (b) trialsExpiringSoonCount (<= 48 hours remaining).",
+        "Frontend displays the new aggregate metrics in the Subscription Analytics dashboard in a way that is readable and consistent with existing card styling.",
+        "All user-facing text is in English."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Enhance the Subscription Analytics page UX with basic data exploration controls: client-side search by business name and quick filters by subscription status/plan (All, No subscription, Free trial active, Free trial expired, Monthly, Yearly, Canceled).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "expand the subscription analytics next?",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A search input filters the detailed workspace list by business name (case-insensitive).",
+        "Filter controls allow toggling the detailed list by the specified statuses/plans without requiring a backend change per filter action.",
+        "When filters/search produce no results, an explicit empty state is shown (not a blank area)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit files under frontend/src/components/ui, frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (compose existing components instead).",
+    "Keep admin authorization behavior consistent with existing checks (trap with an Unauthorized message for non-admins)."
+  ],
+  "nonGoals": [
+    "Do not implement real-time updates/streaming analytics.",
+    "Do not add external databases or third-party analytics services.",
+    "Do not add third-party authentication; Internet Identity remains the only auth mechanism."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-06T09:48:28.454Z",
+  "summary": "Frontend adds new subscription analytics UI pieces (status badge, filters, workspace table) and updates SubscriptionAnalyticsPage to apply client-side search and filter logic against `analytics.subscriptionDetails`, plus shows new percentage fields. Backend changes shown are limited to type definitions; the diff summary does not include evidence of the required new admin-only analytics query/fields implementation.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Backend exposes an admin-only query that returns a list of workspace subscription summaries with businessName, owner, plan, startDate, endDate, canceledAt, and a derived status; unauthorized callers trap with an Unauthorized message consistent with existing admin-only endpoints.",
+      "reason": "The diff summary for backend/main.mo only shows added/modified type definitions (SubscriptionPlan/Subscription/BusinessWorkspace) and does not show any new/updated admin-only analytics query that returns per-workspace subscription summaries or enforces the admin-only Unauthorized trap behavior for that endpoint.",
+      "evidence": [
+        "backend/main.mo (truncated; shows types and existing authorization pattern in generateAiAdWorkspaces, but no analytics query implementation)"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Backend returns new aggregate fields for monthly% and yearly% of total workspaces and trialsExpiringSoonCount (<=48 hours remaining), and frontend displays these metrics.",
+      "reason": "Frontend code references `analytics.monthlyPercent` and `analytics.yearlyPercent`, but the diff summary does not provide evidence that backend computes/returns these percentage fields or a trials-expiring-soon count (48-hour window). The backend portion shown does not include analytics computations or return types/fields for these aggregates.",
+      "evidence": [
+        "frontend/src/pages/SubscriptionAnalyticsPage.tsx (truncated; uses analytics.monthlyPercent/yearlyPercent and expiringFreeTrialCount)",
+        "backend/main.mo (truncated; no aggregate analytics computation/query shown)"
+      ]
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.62,
+  "changed_files": [
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/subscriptions/SubscriptionStatusBadge.tsx",
+    "frontend/src/components/subscriptions/WorkspaceSubscriptionFilters.tsx",
+    "frontend/src/components/subscriptions/WorkspaceSubscriptionTable.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/SubscriptionAnalyticsPage.tsx",
+    "project_state.json"
+  ]
+}
